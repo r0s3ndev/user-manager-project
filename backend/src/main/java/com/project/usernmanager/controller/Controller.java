@@ -17,6 +17,7 @@ import java.util.Optional;
 
 @RestController
 @RequiredArgsConstructor
+@CrossOrigin(origins = "http://localhost:3000")
 public class Controller {
     private final UserService userService;
     private static final Logger log = LoggerFactory.getLogger(UsernmanagerApplication.class);
@@ -47,11 +48,11 @@ public class Controller {
     }
 
     @PostMapping("/")
-    public ResponseEntity<String> addUser(@RequestBody UserDTO userDTO){
+    public ResponseEntity<?> addUser(@RequestBody UserDTO userDTO){
         try{
-            userService.addUser(userDTO);
+            UserEntity user = userService.addUser(userDTO);
             log.info("User successfully  added!");
-            return ResponseEntity.status(HttpStatus.CREATED).body("User successfully  added!");
+            return ResponseEntity.status(HttpStatus.CREATED).body(user);
         }
         catch (RuntimeException e) {
             log.error(e.getMessage());

@@ -25,7 +25,7 @@ public class UserService {
     }
 
 
-    public void addUser(UserDTO userDTO){
+    public UserEntity addUser(UserDTO userDTO){
         //check if email already exist
         Optional<UserEntity> checkUserEmail = userRepository.findByEmail(userDTO.getEmail());
         if(checkUserEmail.isPresent()){
@@ -49,6 +49,7 @@ public class UserService {
         }
         user.setAssignedRoles(roles);
         userRepository.save(user);
+        return user;
     }
 
 
@@ -85,9 +86,11 @@ public class UserService {
             }
             existingUser.setAssignedRoles(roles);
         }
-        if(updatedUser.getUsername() != null || updatedUser.getEmail() != null) {
+        if(updatedUser.getUsername() != null && updatedUser.getEmail() != null) {
             existingUser.setUsername(updatedUser.getUsername());
             existingUser.setEmail(updatedUser.getEmail());
+        } else {
+            throw new IllegalArgumentException("Cannot update to this User! invalid email or username!");
         }
 
         return userRepository.save(existingUser);
